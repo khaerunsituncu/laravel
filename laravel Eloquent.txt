@@ -1,0 +1,57 @@
+Eloquent Laravel
+
+#mengambil semua data
+$siswa = Siswa::all();
+
+#mengambil 100 data pertama
+$siswa = Siswa::take(100);
+$siswa = Siswa::take(100)->get();
+
+#mengambil data terakhir dari database
+$siswa = Siswa::latest();
+$siswa = Siswa::latest()->first();
+
+#isi acak tanggal
+Route::get('tanggallahir', function(){
+    foreach(\App\Siswa::all() as $siswa ){
+        $tanggalMulai = strtotime('2010-01-01');
+        $tanggalAkhir = strtotime('2011-12-30');
+    
+        $tanggal = rand($tanggalMulai, $tanggalAkhir);
+        $tgl_lahir = date('Y-m-d',$tanggal);
+    
+        $siswa->tgl_lahir = $tgl_lahir;
+        $siswa->save();
+    }
+}
+
+#filter mengambil data berdasarkan rentang waktu 
+$siswa = Siswa::whereBetween('tgl_lahir',['2010-08-01','2010-08-31'])->get();
+
+#filter mengambil data siswa berdasarkan id, dianatar 1 sampai 10
+$siswa = Siswa::whereBetween('id',[1,20])->get();
+
+#menggunakan findOrFail()
+$siswa = Siswa::findOrFail($id);
+
+#mengambil data berdasarkan isi kolom
+$siswa = Siswa::where('nama_depan', '=', 'Khaerun')->first();
+or
+$siswa = Siswa::whereNamaDepan('Khaerun')->first();
+
+#pluck
+$siswa = Siswa::pluck('nama_depan','id');
+
+#map tampilan mengubah data tampa mengubah data di database
+$siswa = Siswa::take(20)->get();
+$siswa = $siswa->map(function($s,$key){
+    if($s->jenis_kelamin == "L"){
+        $s->jenis_kelamin == "Laki-Laki";
+    }else {
+        $s->jenis_kelamin == "Perempuan";
+    }
+    
+    return $s;
+});
+
+#

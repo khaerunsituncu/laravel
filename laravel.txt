@@ -1,0 +1,161 @@
+Laravel di Linux Manjaro — Xampp
+
+# Install Composer dulu
+pacman -S composer
+
+# pastikan composer menjadi global di linux
+nano ~/.bashrc
+# tambah baris di bawah ini
+PATH=$PATH:$HOME/.config/composer/vendor/bin
+export PATH
+#lalu ketik ini di terminal
+source ~/.bashrc
+
+# Install Laravel
+# saat menginstall laravel harus terhubung dengan internet di laptop saya
+# via laravel installer
+composer global require laravel/installer
+laravel new namablog
+
+# via composer create-project
+composer create-project — prefer-dist laravel/laravel namaproject
+
+# untuk memulai Server
+php artisan serve
+
+# Xampp
+# catat saat ingin menginstall laravel di htdoc (xampp) kamu buat
+# folder dulu lalu beri hak akses “chmod 777 -R Folder” kemudian di dalam
+# folder itu kamu install laravel “laravel new blog”
+# lalu beri hak akses 777 juga pada blog
+
+# coba bila ada masalah
+php artisan route:clear
+php artisan config:clear
+php artisan cache:clear
+
+# Masuk koding rollo data mahasiswa
+
+# membuat migration database
+# buat dulu database di phpmyadmin
+# tulis perintah ini untuk membuat table
+php artisan make:migration create_siswa_table --create=siswa
+
+# buka di database/migration/create_siswa_table, telah dibuat kan skema untuk membuat fill
+# untuk migrate
+php artisan migrate
+
+
+# membuat route
+# posisinya ada di routes/web.php
+
+# membuat controller
+php artisan make:controller SiswaController   
+
+# alamat controller
+/app/http/controller
+#untuk memanggil views
+return view('alamatview');
+
+# alamat views
+resources/views/
+
+# membuat model
+php artisan make:model Siswa 
+
+# alamt model
+/app/
+
+
+# mengisi password pada tabel user
+php artisan tinker
+
+
+khaerun in htdocs/belajar/rollo via ⬢ v12.13.0 via 🐘 v7.3.7 
+➜ php artisan tinker                        
+Psy Shell v0.9.12 (PHP 7.3.7 — cli) by Justin Hileman
+>>> $user = new \App\User;
+=> App\User {#2994}
+>>> $user->name = "khaerun"
+=> "khaerun"
+>>> $user->email = 'khaerun@gamil.com'
+=> "khaerun@gamil.com"
+>>> $user->password = bcrypt('rahasia')
+=> "$2y$10$9LBwbQkKEAl85RZh0jayzuhBhVtOIoL3zx6c727SYx4uM.R2O0kIe"
+>>> $user->remember_token = str_random(60)
+PHP Fatal error:  Call to undefined function str_random() in Psy Shell code on line 1
+>>> $user->remember_token = Str::random(60)
+=> "vGTsulqyPpi1iWhOXbj4u9691GlOg8t2in9xNPZweHFT7sLfaREleeuV4YkK"
+>>> $user->save()
+=> true
+>>> 
+
+
+-----------------------------------S
+
+
+# middleware
+
+Route::group(['middleware' => 'auth'],function(){
+  Route::get('/dashboard','DashboardController@index');
+  Route::get('/siswa','SiswaController@index');
+  Route::post('/siswa/create','SiswaController@create');
+  Route::get('/siswa/{id}/edit','SiswaController@edit');
+  Route::post('/siswa/{id}/update','SiswaController@update');
+  Route::get('/siswa/{id}/delete','SiswaController@delete');
+});
+
+Route::get('/siswa','SiswaController@index')->middleware('auth');
+
+
+
+
+-------catatan---------
+#kalau database di kirim semua di view maka harus menggunakn foreach karena datanya berbentuk array
+#kalau mengirim data dari database menurut id tidak perlu pakai foreach
+
+---------
+
+
+
+
+
+part 30
+
+cline site ->
+Server site ->
+
+
+
+Perintah-perintah Artisan
+// maintenance mode
+php artisan down
+php artisan down --message=" " --retry=60
+
+php artisan list make
+
+
+#Menghapus package Laravel
+#cara 1
+Sebelum kalian meremove sangat penting untuk kalian menghapus semua referensi pada project kalian sebelum menjalankan perintah di bawah ini.
+Contoh referensi yang sering digunakan adalah pada config/app.php di bagian provider dan aliases
+
+composer remove nama_package
+exp:composer remove laravel/tinker
+
+php artisan config:clear
+composer dump-autoload
+
+#cara 2
+Buka composer.json pada Project kalian.
+Pada bagian require hapus package yang ingin kalian hapus
+
+composer update
+
+php artisan config:clear
+
+composer dump-autoload
+
+
+#Mengedit page 404 | Not Found
+alamat = vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/views/404.blade.php
